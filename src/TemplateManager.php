@@ -16,23 +16,27 @@ class TemplateManager
     private $siteRepository;
     private $destinationRepository;
     private $applicationContext;
+    private $renderer;
 
     /**
      * @param QuoteRepository $quoteRepository
      * @param SiteRepository $siteRepository
      * @param DestinationRepository $destinationRepository
      * @param ApplicationContext $applicationContext
+     * @param Renderer $renderer
      */
     public function __construct(
         QuoteRepository $quoteRepository,
         SiteRepository $siteRepository,
         DestinationRepository $destinationRepository,
-        ApplicationContext $applicationContext
+        ApplicationContext $applicationContext,
+        Renderer $renderer
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->siteRepository = $siteRepository;
         $this->destinationRepository = $destinationRepository;
         $this->applicationContext = $applicationContext;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -154,7 +158,7 @@ class TemplateManager
             return $text;
         }
 
-        return str_replace('[quote:summary_html]', Quote::renderHtml($quote), $text);
+        return str_replace('[quote:summary_html]', $this->renderer->renderHtml($quote->id), $text);
     }
 
     /**
@@ -168,7 +172,7 @@ class TemplateManager
             return $text;
         }
 
-        return str_replace('[quote:summary]', Quote::renderText($quote), $text);
+        return str_replace('[quote:summary]', $this->renderer->renderText($quote), $text);
     }
 
     /**

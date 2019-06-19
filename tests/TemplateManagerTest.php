@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Entity\Quote;
 use App\Entity\Template;
+use App\Renderer;
 use App\Repository\QuoteRepository;
 use App\Repository\SiteRepository;
 use Faker\Generator;
@@ -31,7 +32,8 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
             QuoteRepository::getInstance(),
             SiteRepository::getInstance(),
             DestinationRepository::getInstance(),
-            ApplicationContext::getInstance()
+            ApplicationContext::getInstance(),
+            new Renderer()
         );
 
         $this->generator = Factory::create();
