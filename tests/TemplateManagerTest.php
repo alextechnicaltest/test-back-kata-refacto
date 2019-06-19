@@ -1,25 +1,31 @@
 <?php
 
-require_once __DIR__ . '/../src/Entity/Destination.php';
-require_once __DIR__ . '/../src/Entity/Quote.php';
-require_once __DIR__ . '/../src/Entity/Site.php';
-require_once __DIR__ . '/../src/Entity/Template.php';
-require_once __DIR__ . '/../src/Entity/User.php';
-require_once __DIR__ . '/../src/Helper/SingletonTrait.php';
-require_once __DIR__ . '/../src/Context/ApplicationContext.php';
-require_once __DIR__ . '/../src/Repository/Repository.php';
-require_once __DIR__ . '/../src/Repository/DestinationRepository.php';
-require_once __DIR__ . '/../src/Repository/QuoteRepository.php';
-require_once __DIR__ . '/../src/Repository/SiteRepository.php';
-require_once __DIR__ . '/../src/TemplateManager.php';
+namespace Tests;
+
+use App\Entity\Quote;
+use App\Entity\Template;
+use Faker\Generator;
+use Faker\Factory;
+use App\TemplateManager;
+use App\Repository\DestinationRepository;
+use App\Context\ApplicationContext;
+use PHPUnit_Framework_TestCase;
 
 class TemplateManagerTest extends PHPUnit_Framework_TestCase
 {
+    /** @var TemplateManager */
+    private $templateManager;
+
+    /** @var Generator */
+    private $generator;
+
     /**
      * Init the mocks
      */
     public function setUp()
     {
+        $this->templateManager = new TemplateManager();
+        $this->generator = Factory::create();
     }
 
     /**
@@ -34,12 +40,10 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
      */
     public function test()
     {
-        $faker = \Faker\Factory::create();
-
-        $expectedDestination = DestinationRepository::getInstance()->getById($destinationId = $faker->randomNumber());
+        $expectedDestination = DestinationRepository::getInstance()->getById($destinationId = $this->generator->randomNumber());
         $expectedUser = ApplicationContext::getInstance()->getCurrentUser();
 
-        $quote = new Quote($faker->randomNumber(), $faker->randomNumber(), $destinationId, $faker->date());
+        $quote = new Quote($this->generator->randomNumber(), $this->generator->randomNumber(), $destinationId, $this->generator->date());
 
         $template = new Template(
             1,
@@ -54,14 +58,8 @@ Bien cordialement,
 L'équipe Evaneos.com
 www.evaneos.com
 ");
-        $templateManager = new TemplateManager();
 
-        $message = $templateManager->getTemplateComputed(
-            $template,
-            [
-                'quote' => $quote
-            ]
-        );
+        $message = $this->templateManager->getTemplateComputed($template, ['quote' => $quote]);
 
         $this->assertEquals('Votre voyage avec une agence locale ' . $expectedDestination->countryName, $message->subject);
         $this->assertEquals("

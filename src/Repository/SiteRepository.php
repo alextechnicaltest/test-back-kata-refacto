@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Repository;
+
+use App\Entity\Site;
+use App\Helper\SingletonTrait;
+use Faker;
+
 class SiteRepository implements Repository
 {
     use SingletonTrait;
