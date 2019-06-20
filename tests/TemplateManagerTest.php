@@ -2,11 +2,17 @@
 
 namespace Tests;
 
+use App\DestinationLinkComputeText;
 use App\Entity\Quote;
 use App\Entity\Template;
+use App\FirstNameComputeText;
+use App\QuoteReplacer;
 use App\Renderer;
 use App\Repository\QuoteRepository;
 use App\Repository\SiteRepository;
+use App\DestinationComputeText;
+use App\SummaryComputeText;
+use App\SummaryHtmlComputeText;
 use Faker\Generator;
 use Faker\Factory;
 use App\TemplateManager;
@@ -27,14 +33,33 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
+        $quoteReplacer = new QuoteReplacer();
+        $renderer = new Renderer();
 
-        $this->templateManager = new TemplateManager(
-            QuoteRepository::getInstance(),
-            SiteRepository::getInstance(),
+        $subjectComputeText = new DestinationComputeText($quoteReplacer, DestinationRepository::getInstance());
+        $contentComputeText = new DestinationComputeText(
+            $quoteReplacer,
             DestinationRepository::getInstance(),
-            ApplicationContext::getInstance(),
-            new Renderer()
+            new FirstNameComputeText(
+                $quoteReplacer,
+                ApplicationContext::getInstance(),
+                new SummaryHtmlComputeText(
+                    $quoteReplacer,
+                    $renderer,
+                    new SummaryComputeText(
+                        $quoteReplacer,
+                        $renderer,
+                        new DestinationLinkComputeText(
+                            $quoteReplacer,
+                            DestinationRepository::getInstance(),
+                            SiteRepository::getInstance()
+                        )
+                    )
+                )
+            )
         );
+
+        $this->templateManager = new TemplateManager($subjectComputeText, $contentComputeText);
 
         $this->generator = Factory::create();
     }
@@ -83,5 +108,26 @@ Bien cordialement,
 L'équipe Evaneos.com
 www.evaneos.com
 ", $message->content);
+    }
+
+    public function test_it_changes_placeholders_for_destination_link_and_summary_and_summary_html()
+    {
+        $expectedSite = SiteRepository::getInstance()->getById($siteId = $this->generator->randomNumber());
+        $expectedDestination = DestinationRepository::getInstance()->getById($destinationId = $this->generator->randomNumber());
+
+        $quote = new Quote($this->generator->randomNumber(), $siteId, $destinationId, $this->generator->date());
+
+        $template = new Template(
+            2,
+            '',
+            "Pour retrouver votre destination: [quote:destination_link] / [quote:summary] / [quote:summary_html]");
+
+        $message = $this->templateManager->getTemplateComputed($template, ['quote' => $quote]);
+
+        $url = $expectedSite->url .'/' .$expectedDestination->countryName .'/quote/' .$quote->id;
+
+        $expectedContent = "Pour retrouver votre destination: $url / {$quote->id} / <p>{$quote->id}</p>";
+
+        $this->assertEquals($expectedContent, $message->content);
     }
 }
