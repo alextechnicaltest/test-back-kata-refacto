@@ -31,14 +31,17 @@ www.evaneos.com
 
 $quoteReplacer = new QuoteReplacer();
 $renderer = new Renderer();
+$destinationRepository = new DestinationRepository();
+$applicationContext = new ApplicationContext();
+$siteRepository = new SiteRepository();
 
-$subjectComputeText = new DestinationComputeText($quoteReplacer, DestinationRepository::getInstance());
+$subjectComputeText = new DestinationComputeText($quoteReplacer, $destinationRepository);
 $contentComputeText = new DestinationComputeText(
     $quoteReplacer,
-    DestinationRepository::getInstance(),
+    $destinationRepository,
     new FirstNameComputeText(
         $quoteReplacer,
-        ApplicationContext::getInstance(),
+        $applicationContext,
         new SummaryHtmlComputeText(
             $quoteReplacer,
             $renderer,
@@ -47,8 +50,8 @@ $contentComputeText = new DestinationComputeText(
                 $renderer,
                 new DestinationLinkComputeText(
                     $quoteReplacer,
-                    DestinationRepository::getInstance(),
-                    SiteRepository::getInstance()
+                    $destinationRepository,
+                    $siteRepository
                 )
             )
         )

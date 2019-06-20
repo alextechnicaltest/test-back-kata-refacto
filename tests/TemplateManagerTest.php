@@ -28,6 +28,21 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
     private $generator;
 
     /**
+     * @var DestinationRepository
+     */
+    private $destinationRepository;
+
+    /**
+     * @var SiteRepository
+     */
+    private $siteRepository;
+
+    /**
+     * @var ApplicationContext
+     */
+    private $applicationContext;
+
+    /**
      * Init the mocks
      */
     public function setUp()
@@ -35,13 +50,17 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
         $quoteReplacer = new QuoteReplacer();
         $renderer = new Renderer();
 
-        $subjectComputeText = new DestinationComputeText($quoteReplacer, DestinationRepository::getInstance());
+        $this->applicationContext = new ApplicationContext();
+        $this->destinationRepository = new DestinationRepository();
+        $this->siteRepository = new SiteRepository();
+
+        $subjectComputeText = new DestinationComputeText($quoteReplacer, $this->destinationRepository);
         $contentComputeText = new DestinationComputeText(
             $quoteReplacer,
-            DestinationRepository::getInstance(),
+            $this->destinationRepository,
             new FirstNameComputeText(
                 $quoteReplacer,
-                ApplicationContext::getInstance(),
+                $this->applicationContext,
                 new SummaryHtmlComputeText(
                     $quoteReplacer,
                     $renderer,
@@ -50,8 +69,8 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
                         $renderer,
                         new DestinationLinkComputeText(
                             $quoteReplacer,
-                            DestinationRepository::getInstance(),
-                            SiteRepository::getInstance()
+                            $this->destinationRepository,
+                            $this->siteRepository
                         )
                     )
                 )
@@ -75,8 +94,8 @@ class TemplateManagerTest extends PHPUnit_Framework_TestCase
      */
     public function test()
     {
-        $expectedDestination = DestinationRepository::getInstance()->getById($destinationId = $this->generator->randomNumber());
-        $expectedUser = ApplicationContext::getInstance()->getCurrentUser();
+        $expectedDestination = $this->destinationRepository->getById($destinationId = $this->generator->randomNumber());
+        $expectedUser = $this->applicationContext->getCurrentUser();
 
         $quote = new Quote($this->generator->randomNumber(), $this->generator->randomNumber(), $destinationId, $this->generator->date());
 
@@ -111,8 +130,8 @@ www.evaneos.com
 
     public function test_it_changes_placeholders_for_destination_link_and_summary_and_summary_html()
     {
-        $expectedSite = SiteRepository::getInstance()->getById($siteId = $this->generator->randomNumber());
-        $expectedDestination = DestinationRepository::getInstance()->getById($destinationId = $this->generator->randomNumber());
+        $expectedSite = $this->siteRepository->getById($siteId = $this->generator->randomNumber());
+        $expectedDestination = $this->destinationRepository->getById($destinationId = $this->generator->randomNumber());
 
         $quote = new Quote($this->generator->randomNumber(), $siteId, $destinationId, $this->generator->date());
 
