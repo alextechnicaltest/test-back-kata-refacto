@@ -2,17 +2,16 @@
 
 namespace Tests;
 
-use App\DestinationLinkComputeText;
 use App\Entity\Quote;
 use App\Entity\Template;
-use App\FirstNameComputeText;
-use App\QuoteReplacer;
-use App\Renderer;
-use App\Repository\QuoteRepository;
 use App\Repository\SiteRepository;
-use App\DestinationComputeText;
-use App\SummaryComputeText;
-use App\SummaryHtmlComputeText;
+use App\TextTransformer\DestinationComputeText;
+use App\TextTransformer\DestinationLinkComputeText;
+use App\TextTransformer\FirstNameComputeText;
+use App\TextTransformer\QuoteReplacer;
+use App\TextTransformer\Renderer;
+use App\TextTransformer\SummaryComputeText;
+use App\TextTransformer\SummaryHtmlComputeText;
 use Faker\Generator;
 use Faker\Factory;
 use App\TemplateManager;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\TextTransformer;
 
 use App\Entity\Quote;
 use App\Repository\DestinationRepository;
@@ -13,6 +13,12 @@ class DestinationLinkComputeText implements ComputeText
     private $siteRepository;
     private $computeText;
 
+    /**
+     * @param QuoteReplacer $quoteReplacer
+     * @param DestinationRepository $destinationRepository
+     * @param SiteRepository $siteRepository
+     * @param ComputeText|null $computeText
+     */
     public function __construct(
         QuoteReplacer $quoteReplacer,
         DestinationRepository $destinationRepository,
@@ -25,7 +31,11 @@ class DestinationLinkComputeText implements ComputeText
         $this->siteRepository = $siteRepository;
     }
 
-
+    /**
+     * @param string $initialText
+     * @param array $data
+     * @return string
+     */
     public function compute($initialText, array $data)
     {
         if(isset($data['quote']) === false || ($data['quote'] instanceof Quote) === false) {

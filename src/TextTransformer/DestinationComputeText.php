@@ -1,25 +1,36 @@
 <?php
 
-namespace App;
+namespace App\TextTransformer;
 
 use App\Entity\Quote;
+use App\Repository\DestinationRepository;
 
-class SummaryHtmlComputeText implements ComputeText
+class DestinationComputeText implements ComputeText
 {
     private $quoteReplacer;
-    private $renderer;
+    private $destinationRepository;
     private $computeText;
 
+    /**
+     * @param QuoteReplacer $quoteReplacer
+     * @param DestinationRepository $destinationRepository
+     * @param ComputeText|null $computeText
+     */
     public function __construct(
         QuoteReplacer $quoteReplacer,
-        Renderer $renderer,
+        DestinationRepository $destinationRepository,
         ComputeText $computeText = null
     ) {
         $this->quoteReplacer = $quoteReplacer;
-        $this->renderer = $renderer;
+        $this->destinationRepository = $destinationRepository;
         $this->computeText = $computeText;
     }
 
+    /**
+     * @param string $initialText
+     * @param array $data
+     * @return string
+     */
     public function compute($initialText, array $data)
     {
         if(isset($data['quote']) === false || ($data['quote'] instanceof Quote) === false) {
@@ -28,10 +39,12 @@ class SummaryHtmlComputeText implements ComputeText
 
         $quote = $data['quote'];
 
+        $destination = $this->destinationRepository->getById($quote->destinationId);
+
         $text = $this->quoteReplacer->replaceQuote(
-            '[quote:summary_html]',
+            '[quote:destination_name]',
             $initialText,
-            $this->renderer->renderHtml($quote->id)
+            $destination->countryName
         );
 
         return $this->computeText ? $this->computeText->compute($text, $data) : $text;

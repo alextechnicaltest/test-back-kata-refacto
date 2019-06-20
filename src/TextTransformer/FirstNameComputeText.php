@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\TextTransformer;
 
 use App\Context\ApplicationContext;
 use App\Entity\User;
@@ -11,6 +11,11 @@ class FirstNameComputeText implements ComputeText
     private $computeText;
     private $applicationContext;
 
+    /**
+     * @param QuoteReplacer $quoteReplacer
+     * @param ApplicationContext $applicationContext
+     * @param ComputeText|null $computeText
+     */
     public function __construct(
         QuoteReplacer $quoteReplacer,
         ApplicationContext $applicationContext,
@@ -21,6 +26,11 @@ class FirstNameComputeText implements ComputeText
         $this->applicationContext = $applicationContext;
     }
 
+    /**
+     * @param string $initialText
+     * @param array $data
+     * @return string
+     */
     public function compute($initialText, array $data)
     {
         $user = $this->getUser($data);

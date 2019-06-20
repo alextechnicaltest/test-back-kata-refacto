@@ -1,15 +1,15 @@
 <?php
 
 use App\Context\ApplicationContext;
-use App\DestinationComputeText;
-use App\DestinationLinkComputeText;
-use App\FirstNameComputeText;
-use App\QuoteReplacer;
-use App\Renderer;
 use App\Repository\DestinationRepository;
 use App\Repository\SiteRepository;
-use App\SummaryComputeText;
-use App\SummaryHtmlComputeText;
+use App\TextTransformer\QuoteReplacer;
+use App\TextTransformer\Renderer;
+use App\TextTransformer\DestinationComputeText;
+use App\TextTransformer\FirstNameComputeText;
+use App\TextTransformer\SummaryHtmlComputeText;
+use App\TextTransformer\SummaryComputeText;
+use App\TextTransformer\DestinationLinkComputeText;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

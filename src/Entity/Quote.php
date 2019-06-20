@@ -9,6 +9,12 @@ class Quote
     public $destinationId;
     public $dateQuoted;
 
+    /**
+     * @param string $id
+     * @param string $siteId
+     * @param string $destinationId
+     * @param string $dateQuoted
+     */
     public function __construct($id, $siteId, $destinationId, $dateQuoted)
     {
         $this->id = $id;

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Entity\Template;
+use App\TextTransformer\ComputeText;
 
 class TemplateManager
 {

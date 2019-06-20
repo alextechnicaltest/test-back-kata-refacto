@@ -1,11 +1,16 @@
 <?php
 
-
-namespace App;
-
+namespace App\TextTransformer;
 
 class QuoteReplacer
 {
+    /**
+     * @param string $quote
+     * @param string $text
+     * @param string $replace
+     * @param string|null $default
+     * @return string
+     */
     public function replaceQuote($quote, $text, $replace, $default = null)
     {
         if( strpos($text, $quote) === false) {

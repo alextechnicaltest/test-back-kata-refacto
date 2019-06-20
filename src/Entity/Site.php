@@ -7,6 +7,10 @@ class Site
     public $id;
     public $url;
 
+    /**
+     * @param string $id
+     * @param string $url
+     */
     public function __construct($id, $url)
     {
         $this->id = $id;

@@ -9,6 +9,12 @@ class User
     public $lastname;
     public $email;
 
+    /**
+     * @param string $id
+     * @param string $firstname
+     * @param string $lastname
+     * @param string $email
+     */
     public function __construct($id, $firstname, $lastname, $email)
     {
         $this->id = $id;
